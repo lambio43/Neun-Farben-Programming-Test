@@ -9,7 +9,10 @@ using static InputSystem_Actions;
 public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUIActions
 {
     public Subject<Vector2> Movement;
+    public Subject<Vector2> Look;
     public Subject<Unit> Attack;
+    public Subject<Unit> Jump;
+    public Subject<Unit> Dash;
     
     
     private InputSystem_Actions _inputActions;
@@ -28,8 +31,13 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
         _inputActions.Player.SetCallbacks(this);
         _inputActions.UI.SetCallbacks(this);
 
+        Cursor.lockState = CursorLockMode.Locked;
+
         Movement = new Subject<Vector2>();
         Attack = new Subject<Unit>();
+        Jump = new Subject<Unit>();
+        Dash = new Subject<Unit>();
+        Look = new Subject<Vector2>();
     }
     
     public void EnablePlayerActions() 
@@ -46,6 +54,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnLook(InputAction.CallbackContext context)
     {
+        Look.OnNext(context.ReadValue<Vector2>());
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -66,6 +75,10 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnJump(InputAction.CallbackContext context)
     {
+       if (context.phase == InputActionPhase.Started) 
+        {
+            Jump.OnNext(UniRx.Unit.Default);
+        } 
     }
 
     public void OnPrevious(InputAction.CallbackContext context)
@@ -78,6 +91,10 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnSprint(InputAction.CallbackContext context)
     {
+        if (context.phase == InputActionPhase.Started) 
+        {
+            Dash.OnNext(UniRx.Unit.Default);
+        } 
     }
 
     public void OnNavigate(InputAction.CallbackContext context)

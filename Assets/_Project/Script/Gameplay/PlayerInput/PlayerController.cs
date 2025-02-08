@@ -2,7 +2,11 @@ using System;
 using NF.Main.Core;
 using NF.Main.Core.PlayerStateMachine;
 using Sirenix.OdinInspector;
+using Unity.Cinemachine;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 namespace NF.Main.Gameplay.PlayerInput
 {
@@ -10,9 +14,25 @@ namespace NF.Main.Gameplay.PlayerInput
     {
         [TabGroup("References")][SerializeField] private PlayerInputReader _playerInput;
         [TabGroup("References")][SerializeField] private Animator _animator;
+
         
+        [SerializeField] private GameManager _gameManager;
         private StateMachine _stateMachine;
         public PlayerState PlayerState { get; set; }
+        
+        //player and camera rotation variables
+        [SerializeField] private CinemachineCamera _playerCamera;
+        private Vector2 _lookDirection;
+        private float _xRotation;
+        private float _yRotation;
+        public float _cameraXSensitivity;
+        public float _cameraYSensitivity;
+        public Transform _orientation;
+
+        //player movement variables
+        private Vector2 _moveDirection;
+        public PlayerMovement _playerMovement;
+       
         
         private void Start()
         {
@@ -34,7 +54,12 @@ namespace NF.Main.Gameplay.PlayerInput
         //Call the current states fixed update method
         private void FixedUpdate()
         {
-            _stateMachine.Update();
+            _stateMachine.FixedUpdate();
+        }
+
+        private void LateUpdate()
+        {
+            Turn();
         }
 
         //Initialize needed data
@@ -49,7 +74,10 @@ namespace NF.Main.Gameplay.PlayerInput
         {
             base.OnSubscriptionSet();
             AddEvent(_playerInput.Attack, _ => OnAttack());
+            AddEvent(_playerInput.Jump, _ => OnJump());
+            AddEvent(_playerInput.Dash, _ => OnDash());
             AddEvent(_playerInput.Movement, OnPlayerMove);
+            AddEvent(_playerInput.Look, OnLook);
         }
 
 
@@ -61,8 +89,10 @@ namespace NF.Main.Gameplay.PlayerInput
             
             // Declare Player States
             var idleState = new PlayerIdleState(this, _animator);
+            var movingState = new PlayerMovingState(this, _animator);
             
             // Define Player State Transitions
+            At(idleState, movingState, new FuncPredicate(() => PlayerState == PlayerState.Moving));
             Any(idleState, new FuncPredicate(ReturnToIdleState));
             
             // Set Initial State
@@ -87,7 +117,66 @@ namespace NF.Main.Gameplay.PlayerInput
         //Player movement logic is handled here
         private void OnPlayerMove(Vector2 movementDirection)
         {
-            Debug.Log($"Player Movement: {movementDirection}");
+            _moveDirection = movementDirection;
+            //Debug.Log($"Player Movement: {movementDirection}");
+            if(_moveDirection != Vector2.zero)
+            {
+                PlayerState = PlayerState.Moving;
+            }
+            else
+            {
+                PlayerState = PlayerState.Idle;
+            }
+        }
+
+        //player jump logic
+        private void OnJump()
+        {
+            _playerMovement.Jump();
+        }
+
+        // player dash logic
+        private void OnDash()
+        {
+            if(_moveDirection == Vector2.up)
+            {
+                _playerMovement.Dash(_playerCamera.transform.forward);
+            }
+            else if (_moveDirection == Vector2.zero)
+            {
+                _playerMovement.Dash(_playerCamera.transform.forward);
+            }
+            else
+            {
+                _playerMovement.Dash(new Vector3(_moveDirection.x, 0, _moveDirection.y));
+            }
+        }
+
+        // player camera look direction change
+        private void OnLook(Vector2 LookDirection)
+        {
+            //Debug.Log($"Player Movement: {LookDirection.normalized}");
+            _lookDirection.x = LookDirection.normalized.x * Time.deltaTime * _cameraXSensitivity;
+            _lookDirection.y = LookDirection.normalized.y * Time.deltaTime * _cameraYSensitivity;
+        }
+
+        //player turn camera and plaeyr
+        private void Turn()
+        {
+            _yRotation += _lookDirection.x;
+
+            _xRotation -= _lookDirection.y;
+            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+            
+            _playerCamera.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
+
+            _orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
+        }
+
+        //get movement for moving
+        public Vector2 GetMovementDirection()
+        {
+            return _moveDirection;
         }
     }
 }
