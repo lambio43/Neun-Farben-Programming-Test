@@ -1,5 +1,5 @@
 public interface IDamager
 {
-    void DamageUnit();
+    void DamageUnit(BaseUnit unitToDamage);
     
 }

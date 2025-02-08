@@ -1,6 +1,7 @@
+using NF.Main.Core;
 using UnityEngine;
 
-public class BaseMovement : MonoBehaviour, IJump, IMove
+public class BaseMovement : MonoExt, IJump, IMove
 {
     public float _moveSpeed;
     public float _jumpForce;
