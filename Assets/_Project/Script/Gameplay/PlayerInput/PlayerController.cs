@@ -90,9 +90,12 @@ namespace NF.Main.Gameplay.PlayerInput
             // Declare Player States
             var idleState = new PlayerIdleState(this, _animator);
             var movingState = new PlayerMovingState(this, _animator);
+            var deathState = new PlayerDeathState(this, _animator);
             
             // Define Player State Transitions
             At(idleState, movingState, new FuncPredicate(() => PlayerState == PlayerState.Moving));
+            At(idleState, deathState, new FuncPredicate(() => PlayerState == PlayerState.Death));
+            At(movingState, deathState, new FuncPredicate(() => PlayerState == PlayerState.Death));
             Any(idleState, new FuncPredicate(ReturnToIdleState));
             
             // Set Initial State
@@ -117,15 +120,17 @@ namespace NF.Main.Gameplay.PlayerInput
         //Player movement logic is handled here
         private void OnPlayerMove(Vector2 movementDirection)
         {
-            _moveDirection = movementDirection;
-            //Debug.Log($"Player Movement: {movementDirection}");
-            if(_moveDirection != Vector2.zero)
+            if(PlayerState != PlayerState.Death)
             {
-                PlayerState = PlayerState.Moving;
-            }
-            else
-            {
-                PlayerState = PlayerState.Idle;
+                _moveDirection = movementDirection;
+                if(_moveDirection != Vector2.zero)
+                {
+                    PlayerState = PlayerState.Moving;
+                }
+                else
+                {
+                    PlayerState = PlayerState.Idle;
+                }
             }
         }
 

@@ -38,7 +38,6 @@ public class BaseUnit : MonoExt, IDamager, IHealth
 
     public virtual void OnDeath()
     {
-        //Game manager call game over
-        GameManager.Instance.GameState = GameState.GameOver;
+
     }
 }
