@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BaseTrap : BaseUnit
+public class BaseTrap : BaseUnit, ITrap
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -14,11 +14,9 @@ public class BaseTrap : BaseUnit
         
     }
 
-    private void OnCollisionEnter(Collision other)
+    public virtual void EffectTrapActivate(BaseUnit unitToAffect)
     {
-        if(other.collider.CompareTag("Player"))
-        {
-            DamageUnit(other.collider.GetComponentInParent<BaseUnit>());
-        }
+
     }
+
 }

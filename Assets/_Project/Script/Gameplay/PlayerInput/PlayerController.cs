@@ -18,7 +18,7 @@ namespace NF.Main.Gameplay.PlayerInput
         
         [SerializeField] private GameManager _gameManager;
         private StateMachine _stateMachine;
-        public PlayerState PlayerState { get; set; }
+        [SerializeField] public PlayerState PlayerState { get; set; }
         
         //player and camera rotation variables
         [SerializeField] private CinemachineCamera _playerCamera;
@@ -138,6 +138,7 @@ namespace NF.Main.Gameplay.PlayerInput
         private void OnJump()
         {
             _playerMovement.Jump();
+            PlayerState = PlayerState.Moving;
         }
 
         // player dash logic

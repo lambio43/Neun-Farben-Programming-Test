@@ -17,21 +17,22 @@ namespace NF.Main.Core.PlayerStateMachine
             //Use this for transitioning between different animator hashes
             //_animator.CrossFade(IdleHash, 0.5f);
             
-            Debug.Log("Entering Player Idle State");
+           // Debug.Log("Entering Player Idle State");
         }
 
         public override void Update()
         {
             base.Update();
-            Debug.Log("Player is Idling");
+            //Debug.Log("Player is Idling");
             _playerController._playerMovement.CheckIfGround();
             //_playerController._playerMovement.SpeedControl();
         }
+        
 
         public override void OnExit()
         {
             base.OnExit();
-            Debug.Log("Exiting Player Idle State");
+            //Debug.Log("Exiting Player Idle State");
         }
     }
 }

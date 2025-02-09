@@ -46,4 +46,24 @@ public class BaseMovement : MonoExt, IJump, IMove
     {
 
     }
+
+    public virtual void ChangeMaxSpeed(float maxSpeedValue)
+    {
+
+    }   
+
+    public virtual void ChangeDrag(float dragValue)
+    {
+
+    } 
+
+    public virtual void SpeedControl()
+    {
+        
+    }
+
+    public virtual void RevertDragValue()
+    {
+        
+    }
 }

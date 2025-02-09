@@ -1,5 +1,6 @@
 using System.Collections;
 using UniRx.Triggers;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerMovement : BaseMovement
@@ -13,6 +14,7 @@ public class PlayerMovement : BaseMovement
     public float _groundDrag;
     public float _playerHeight;
     public LayerMask _groundLayerMask;
+    private float _dragValueToUse;
 
 
 
@@ -22,6 +24,7 @@ public class PlayerMovement : BaseMovement
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         SpeedControl();
+        _dragValueToUse = _groundDrag;
     }
 
     public override void Jump()
@@ -44,20 +47,21 @@ public class PlayerMovement : BaseMovement
     public override void Move(Vector2 movementDireciton)
     {
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
-        
+        //Debug.Log(_moveDirection.normalized);
         if(_isGrounded == true)
         {
-            _rb.linearDamping = _groundDrag;
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force); 
+            _rb.linearDamping = _dragValueToUse;
+            _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
+            //_rb.MovePosition(transform.position + _moveDirection.normalized * _moveSpeed * Time.deltaTime); 
+            
         }
         else
         {
             _rb.linearDamping = 0;
             _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 10f, ForceMode.Force);
+            //_rb.MovePosition(transform.position + _moveDirection.normalized * _moveSpeed * _airMultiplier * Time.deltaTime); 
+            
         }
-
-        
-        //_rb.MovePosition(_rb.position + (_moveDirection.normalized  * _moveSpeed * Time.deltaTime));
     }
 
     public override void Dash(Vector3 dashDireciton)
@@ -88,15 +92,8 @@ public class PlayerMovement : BaseMovement
         _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
     }
 
-    public void SpeedControl()
+    public override void SpeedControl()
     {
-        // Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
-
-        // if(flatVel.magnitude > _moveSpeed)
-        // {
-        //     Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-        //     _rb.linearVelocity = new Vector3 (limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
-        // }
         _rb.maxLinearVelocity = _moveSpeed;
     }
 
@@ -104,6 +101,25 @@ public class PlayerMovement : BaseMovement
     {
         yield return new WaitForSeconds(0.025f);
         _rb.maxLinearVelocity = _dashForce;
-        _rb.AddForce(_dashForce * direction, ForceMode.Impulse);
+        _rb.AddForce(_dashForce * direction, ForceMode.VelocityChange);
+    }
+    
+    public override void ChangeDrag(float dragValue)
+    {
+        base.ChangeDrag(dragValue);
+        _dragValueToUse = dragValue;
+        _rb.linearDamping = dragValue;
+    }
+
+    public override void RevertDragValue()
+    {
+        base.RevertDragValue();
+        _dragValueToUse = _groundDrag;
+    }
+
+    public override void ChangeMaxSpeed(float maxSpeedValue)
+    {
+        base.ChangeMaxSpeed(maxSpeedValue);
+        _rb.maxLinearVelocity = maxSpeedValue;
     }
 }

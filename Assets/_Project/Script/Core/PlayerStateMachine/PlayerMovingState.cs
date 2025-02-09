@@ -17,13 +17,13 @@ namespace NF.Main.Core.PlayerStateMachine
             //Use this for transitioning between different animator hashes
             //_animator.CrossFade(IdleHash, 0.5f);
             
-            Debug.Log("Entering Player Moving State");
+            //Debug.Log("Entering Player Moving State");
         }
 
         public override void Update()
         {
             base.Update();
-            _playerController._playerMovement.CheckIfGround();
+            
             //_playerController._playerMovement.SpeedControl();
         }
 
@@ -31,13 +31,15 @@ namespace NF.Main.Core.PlayerStateMachine
         {
             base.FixedUpdate();
             _playerController._playerMovement.Move(_playerController.GetMovementDirection());
+            _playerController._playerMovement.CheckIfGround();
+            //Debug.Log(_playerController._playerMovement._rb.linearVelocity); 
         }
 
 
         public override void OnExit()
         {
             base.OnExit();
-            Debug.Log("Exiting Player Moving State");
+            //Debug.Log("Exiting Player Moving State");
         }
     }
 }
