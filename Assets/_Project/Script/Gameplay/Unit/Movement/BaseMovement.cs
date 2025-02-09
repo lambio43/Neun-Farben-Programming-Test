@@ -57,6 +57,11 @@ public class BaseMovement : MonoExt, IJump, IMove
 
     } 
 
+    public virtual void ChangeMoveSpeed(float moveSpeedValue)
+    {
+        
+    }
+
     public virtual void SpeedControl()
     {
         

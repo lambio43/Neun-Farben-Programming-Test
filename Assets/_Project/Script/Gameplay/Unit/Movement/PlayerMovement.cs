@@ -16,9 +16,6 @@ public class PlayerMovement : BaseMovement
     public LayerMask _groundLayerMask;
     private float _dragValueToUse;
 
-
-
-
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -121,5 +118,12 @@ public class PlayerMovement : BaseMovement
     {
         base.ChangeMaxSpeed(maxSpeedValue);
         _rb.maxLinearVelocity = maxSpeedValue;
+    }
+
+    public override void ChangeMoveSpeed(float moveSpeedValue)
+    {
+        base.ChangeMoveSpeed(moveSpeedValue);
+        _moveSpeed = moveSpeedValue;
+        SpeedControl();
     }
 }
