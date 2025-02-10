@@ -129,7 +129,7 @@ namespace NF.Main.Gameplay.PlayerInput
                 }
                 else
                 {
-                    PlayerState = PlayerState.Idle;
+                    //PlayerState = PlayerState.Idle;
                 }
             }
         }
@@ -137,8 +137,8 @@ namespace NF.Main.Gameplay.PlayerInput
         //player jump logic
         private void OnJump()
         {
-            _playerMovement.Jump();
             PlayerState = PlayerState.Moving;
+            _playerMovement.Jump();
         }
 
         // player dash logic

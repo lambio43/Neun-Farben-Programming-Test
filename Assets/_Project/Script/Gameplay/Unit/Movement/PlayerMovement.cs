@@ -44,20 +44,16 @@ public class PlayerMovement : BaseMovement
     public override void Move(Vector2 movementDireciton)
     {
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
-        //Debug.Log(_moveDirection.normalized);
         if(_isGrounded == true)
         {
             _rb.linearDamping = _dragValueToUse;
             _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
-            //_rb.MovePosition(transform.position + _moveDirection.normalized * _moveSpeed * Time.deltaTime); 
             
         }
         else
         {
             _rb.linearDamping = 0;
             _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 10f, ForceMode.Force);
-            //_rb.MovePosition(transform.position + _moveDirection.normalized * _moveSpeed * _airMultiplier * Time.deltaTime); 
-            
         }
     }
 
