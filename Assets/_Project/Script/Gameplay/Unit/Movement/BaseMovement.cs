@@ -71,4 +71,9 @@ public class BaseMovement : MonoExt, IJump, IMove
     {
         
     }
+
+    public virtual void  CheckIfGround()
+    {
+        
+    }
 }

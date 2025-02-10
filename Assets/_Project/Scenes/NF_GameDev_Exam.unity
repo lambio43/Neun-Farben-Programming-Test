@@ -1478,10 +1478,11 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _gameManager: {fileID: 1918027004}
   _playerCamera: {fileID: 688719928}
-  _cameraXSensitivity: 100
-  _cameraYSensitivity: 100
+  _cameraXSensitivity: 200
+  _cameraYSensitivity: 200
   _orientation: {fileID: 1729534377}
   _playerMovement: {fileID: 1678409461}
+  _playerMovementStrafe: {fileID: 0}
 --- !u!1 &1601628068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,9 +1523,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1678409460}
-  - component: {fileID: 1678409459}
   - component: {fileID: 1678409461}
   - component: {fileID: 1678409462}
+  - component: {fileID: 1678409464}
+  - component: {fileID: 1678409465}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1532,33 +1534,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!54 &1678409459
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1678409457}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 112
-  m_CollisionDetection: 1
 --- !u!4 &1678409460
 Transform:
   m_ObjectHideFlags: 0
@@ -1607,7 +1582,7 @@ MonoBehaviour:
   _isAbleToJump: 1
   _isAbleToDash: 1
   _isGrounded: 1
-  _rb: {fileID: 1678409459}
+  _rb: {fileID: 1678409465}
   _isDashing: 0
   _orientation: {fileID: 1729534377}
   _groundDrag: 5
@@ -1615,6 +1590,11 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  _isStrafing: 0
+  _isStrafeJumping: 0
+  _jumpQueue: 0
+  _wishJump: 0
+  _gravity: 20
 --- !u!114 &1678409462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1639,6 +1619,58 @@ MonoBehaviour:
   _maxHp: 10
   _dmg: 5
   _playerController: {fileID: 1590927118}
+--- !u!143 &1678409464
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678409457}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1678409465
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678409457}
+  serializedVersion: 4
+  m_Mass: 2
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 112
+  m_CollisionDetection: 1
 --- !u!1 &1711789908
 GameObject:
   m_ObjectHideFlags: 0
@@ -1860,7 +1892,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 100, y: 5, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

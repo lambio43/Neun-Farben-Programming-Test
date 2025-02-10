@@ -1,6 +1,7 @@
 using System.Collections;
 using UniRx.Triggers;
 using Unity.Mathematics;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : BaseMovement
@@ -16,6 +17,14 @@ public class PlayerMovement : BaseMovement
     public LayerMask _groundLayerMask;
     private float _dragValueToUse;
 
+    public bool _isStrafing;
+    public bool _isStrafeJumping;
+
+    public bool _jumpQueue = false;
+    public bool _wishJump = false;
+    
+    public float _gravity;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -24,36 +33,101 @@ public class PlayerMovement : BaseMovement
         _dragValueToUse = _groundDrag;
     }
 
-    public override void Jump()
+    private void FixedUpdate()
     {
-        if(_isAbleToJump)
-        {
-            _rb.linearDamping = 0;
-            //_rb.linearVelocity = new Vector3 (_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
-            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-            _isAbleToJump = false;
-            //Invoke(nameof(OnLand), _jumpCooldown);
-        }   
+        GravityForce();
     }
 
-    public override void OnLand()
+    public void GravityForce()
     {
-        _isAbleToJump = true;
+        _rb.AddForce((Vector3.down * _gravity) * Time.deltaTime, ForceMode.VelocityChange);
+    }
+
+    public void JumpQueue()
+    {
+        if (_isGrounded)
+		{
+			_wishJump = true;
+		}
+
+		if (!_isGrounded)
+		{
+			_jumpQueue = true;
+		}
+		if (_isGrounded && _jumpQueue)
+		{
+			_wishJump = true;
+			_jumpQueue = false;
+		}
+
+        if(_wishJump)
+        {
+            Jump();
+        }
+    }
+
+    public override void Jump()
+    {
+        //JumpQueue();
+
+        if(_wishJump && _isGrounded)
+        {
+            _wishJump = false;
+            _rb.linearDamping = 0;
+            //_rb.linearVelocity = new Vector3 (_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.VelocityChange);
+            _isAbleToJump = false;
+            //Invoke(nameof(OnLand), _jumpCooldown);
+
+            if(_isStrafing)
+            {
+                _isStrafeJumping = true;
+                _rb.maxLinearVelocity = 45f;
+            }
+            else
+            {
+                _isStrafeJumping = false;
+            }
+        }   
     }
 
     public override void Move(Vector2 movementDireciton)
     {
+        if(movementDireciton.x != 0)
+        {
+            _isStrafing = true;
+        }
+        else
+        {
+            _isStrafing = false;
+            _isStrafeJumping = false;
+        }
+
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
-        if(_isGrounded == true)
+
+        if(_isGrounded == true && _wishJump == false)
         {
             _rb.linearDamping = _dragValueToUse;
+            _gravity = 20;
+        }
+
+        if(_isGrounded == true)
+        {
             _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
+        }
+        else if (_isGrounded == false && _isStrafing == true)
+        {
+            _rb.linearDamping = 0;
+            _rb.AddForce(_orientation.forward * _moveSpeed * 12, ForceMode.Acceleration);
+            _rb.AddForce(_moveDirection.normalized * _moveSpeed * 8f, ForceMode.Acceleration);
+            _gravity = 10;
             
         }
         else
         {
             _rb.linearDamping = 0;
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 10f, ForceMode.Force);
+            _rb.AddForce(_moveDirection.normalized * _moveSpeed  * 10f, ForceMode.Force);
+            SpeedControl();
         }
     }
 
@@ -78,11 +152,13 @@ public class PlayerMovement : BaseMovement
         SpeedControl();
     }
 
-    public void CheckIfGround()
+    public override void CheckIfGround()
     {
         //ground check
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
-        _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
+        _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask); 
+        
+        
     }
 
     public override void SpeedControl()

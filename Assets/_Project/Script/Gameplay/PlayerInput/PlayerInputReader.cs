@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using static InputSystem_Actions;
 
 [CreateAssetMenu(fileName = "PlayerInputReader", menuName = "ScriptableObject/Player/InputReader")]
@@ -13,6 +14,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
     public Subject<Unit> Attack;
     public Subject<Unit> Jump;
     public Subject<Unit> Dash;
+    //public Subject<Vector2> ScrollWheel;
     
     
     private InputSystem_Actions _inputActions;
@@ -38,6 +40,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
         Jump = new Subject<Unit>();
         Dash = new Subject<Unit>();
         Look = new Subject<Vector2>();
+        //ScrollWheel = new Subject<Vector2>();
     }
     
     public void EnablePlayerActions() 
@@ -127,6 +130,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnScrollWheel(InputAction.CallbackContext context)
     {
+        //ScrollWheel.OnNext(context.ReadValue<Vector2>());
     }
 
     public void OnTrackedDevicePosition(InputAction.CallbackContext context)

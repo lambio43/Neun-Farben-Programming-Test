@@ -32,6 +32,7 @@ namespace NF.Main.Gameplay.PlayerInput
         //player movement variables
         private Vector2 _moveDirection;
         public PlayerMovement _playerMovement;
+        public PlayerMovementStrafeJumping _playerMovementStrafe;
        
         
         private void Start()
@@ -76,6 +77,7 @@ namespace NF.Main.Gameplay.PlayerInput
             AddEvent(_playerInput.Attack, _ => OnAttack());
             AddEvent(_playerInput.Jump, _ => OnJump());
             AddEvent(_playerInput.Dash, _ => OnDash());
+            //AddEvent(_playerInput.ScrollWheel, _ => OnJump());
             AddEvent(_playerInput.Movement, OnPlayerMove);
             AddEvent(_playerInput.Look, OnLook);
         }
@@ -129,7 +131,7 @@ namespace NF.Main.Gameplay.PlayerInput
                 }
                 else
                 {
-                    //PlayerState = PlayerState.Idle;
+                    PlayerState = PlayerState.Idle;
                 }
             }
         }
@@ -138,7 +140,9 @@ namespace NF.Main.Gameplay.PlayerInput
         private void OnJump()
         {
             PlayerState = PlayerState.Moving;
-            _playerMovement.Jump();
+            _playerMovement.JumpQueue();
+            //_playerMovementStrafe.QueueJump();
+            //PlayerState = PlayerState.Idle;
         }
 
         // player dash logic

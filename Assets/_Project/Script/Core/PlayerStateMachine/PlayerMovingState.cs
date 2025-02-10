@@ -33,6 +33,8 @@ namespace NF.Main.Core.PlayerStateMachine
             _playerController._playerMovement.Move(_playerController.GetMovementDirection());
             _playerController._playerMovement.CheckIfGround();
             //Debug.Log(_playerController._playerMovement._rb.linearVelocity); 
+            //_playerController._playerMovementStrafe.CheckIfGround();
+            //_playerController._playerMovementStrafe.Move(_playerController.GetMovementDirection());
         }
 
 

@@ -18,6 +18,8 @@ namespace NF.Main.Core.PlayerStateMachine
             //_animator.CrossFade(IdleHash, 0.5f);
             
            // Debug.Log("Entering Player Idle State");
+           _playerController._playerMovement._isStrafing = false;
+           _playerController._playerMovement._isStrafeJumping = false;
         }
 
         public override void Update()
