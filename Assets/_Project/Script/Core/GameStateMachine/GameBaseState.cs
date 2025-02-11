@@ -19,5 +19,6 @@ public enum GameState
 {
     Paused,
     Playing,
-    GameOver
+    GameOver,
+    GameWin
 }

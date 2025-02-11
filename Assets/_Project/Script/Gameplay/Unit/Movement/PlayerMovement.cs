@@ -86,7 +86,7 @@ public class PlayerMovement : BaseMovement
             if(_isStrafing)
             {
                 _isStrafeJumping = true;
-                _rb.maxLinearVelocity = 45f;
+                _rb.maxLinearVelocity = 35f;
             }
             else
             {
@@ -114,17 +114,18 @@ public class PlayerMovement : BaseMovement
             _rb.linearDamping = _dragValueToUse;
             _gravity = 20;
         }
-
+        
         if(_isGrounded == true)
         {
             _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
+            
         }
         else if (_isGrounded == false && _isStrafing == true)
         {
             _rb.linearDamping = 0;
-            _rb.AddForce(_orientation.forward * _moveSpeed * 12, ForceMode.Acceleration);
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed * 8f, ForceMode.Acceleration);
-            _gravity = 10;
+            _rb.AddForce(_orientation.forward * _moveSpeed * 3.5f, ForceMode.Acceleration);
+            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 2.5f, ForceMode.Acceleration);
+            //_gravity = 15;
             
         }
         else
@@ -140,7 +141,7 @@ public class PlayerMovement : BaseMovement
         if(_isAbleToDash)
         {
             _rb.linearDamping = 0;
-            _gravity = 10;
+            //_gravity = 15;
             _isDashing = true;
             base.Dash(dashDireciton);
             _isAbleToDash = false;

@@ -1,5 +1,7 @@
 using NF.Main.Core;
 using NF.Main.Core.GameStateMachine;
+using UnityEngine.Events;
+
 
 namespace NF.Main.Gameplay
 {
@@ -8,6 +10,9 @@ namespace NF.Main.Gameplay
         public GameState GameState;
 
         private StateMachine _stateMachine;
+
+        public UnityEvent OnWin;
+        
         
         private void Awake()
         {
@@ -35,11 +40,13 @@ namespace NF.Main.Gameplay
             var pausedState = new GamePausedState(this, GameState.Paused);
             var playingState = new GamePlayingState(this, GameState.Playing);
             var gameOverState = new GameOverState(this, GameState.GameOver);
+            var gameWinState = new GameWinState(this, GameState.GameOver);
 
 
             // Define transitions
             At(playingState, pausedState, new FuncPredicate(() => GameState == GameState.Paused));
             At(playingState, gameOverState, new FuncPredicate(() => GameState == GameState.GameOver));
+            At(playingState, gameWinState, new FuncPredicate(() => GameState == GameState.GameWin));
             
             Any(playingState, new FuncPredicate(() => GameState == GameState.Playing));
 
