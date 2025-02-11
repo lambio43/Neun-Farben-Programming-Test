@@ -25,8 +25,6 @@ public class EnemyMovement : BaseMovement
     {
         base.Move(movementDireciton);
 
-        //Ai movement
-
         transform.position = Vector3.MoveTowards(transform.position, _enemyAIPath[_currentAIPathIndex].position, _moveSpeed * Time.deltaTime);
         CheckIfEnemyOnLocation();
     }

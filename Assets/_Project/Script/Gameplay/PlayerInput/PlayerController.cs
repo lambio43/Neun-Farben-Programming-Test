@@ -34,8 +34,8 @@ namespace NF.Main.Gameplay.PlayerInput
         public PlayerMovement _playerMovement;
         public PlayerMovementStrafeJumping _playerMovementStrafe;
 
+        //Reset Event
         public delegate void OnResetPlayer();
-
         public event OnResetPlayer _onResetPlayer;
        
         

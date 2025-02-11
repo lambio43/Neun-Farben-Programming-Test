@@ -1,3 +1,8 @@
+/*
+Recreated Source movement script from a youtube video
+youtube link: https://www.youtube.com/watch?v=AVjbCn5i_rk 
+Github link: https://github.com/alpharaoh/SourceMovement/blame/main/PlayerMovementWithStrafes.cs
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

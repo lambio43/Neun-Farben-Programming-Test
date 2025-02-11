@@ -7,23 +7,23 @@ public class PlayerMovement : BaseMovement
 {
     public bool _isDashing = false;
 
+    //Directions
     public Transform _orientation;
-
     private Vector3 _moveDirection;
 
+    //Physics applied to player
     public float _groundDrag;
     public float _playerHeight;
     public LayerMask _groundLayerMask;
+    public float _gravity;
     private float _dragValueToUse;
 
+    //Strafe jumping or bhop variables
     public bool _isStrafing;
     public bool _isStrafeJumping;
-
     public bool _jumpQueue = false;
     public bool _wishJump = false;
     
-    public float _gravity;
-
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -37,6 +37,7 @@ public class PlayerMovement : BaseMovement
         GravityForce();
     }
 
+    //Gravity force
     public void GravityForce()
     {
         if(_isDashing)
@@ -46,6 +47,7 @@ public class PlayerMovement : BaseMovement
         _rb.AddForce((Vector3.down * _gravity) * Time.deltaTime, ForceMode.VelocityChange);
     }
 
+    //Determine if player is trying to jump again
     public void JumpQueue()
     {
         if (_isGrounded)
@@ -69,18 +71,15 @@ public class PlayerMovement : BaseMovement
         }
     }
 
+    //Jump
     public override void Jump()
     {
-        //JumpQueue();
-
-        if(_wishJump)// && _isGrounded)
+        if(_wishJump)
         {
             _wishJump = false;
             _rb.linearDamping = 0;
-            //_rb.linearVelocity = new Vector3 (_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.VelocityChange);
             _isAbleToJump = false;
-            //Invoke(nameof(OnLand), _jumpCooldown);
 
             if(_isStrafing)
             {
@@ -94,8 +93,10 @@ public class PlayerMovement : BaseMovement
         }   
     }
 
+
     public override void Move(Vector2 movementDireciton)
     {
+        //Determine whether player is strafing
         if(movementDireciton.x != 0)
         {
             _isStrafing = true;
@@ -106,8 +107,11 @@ public class PlayerMovement : BaseMovement
             _isStrafeJumping = false;
         }
 
+        //Move direction
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
+        
 
+        //Check if player is strafe jumping and decide if velocity is limited
         if(_isGrounded == true && _jumpQueue == false)
         {
             _rb.linearDamping = _dragValueToUse;
@@ -123,9 +127,7 @@ public class PlayerMovement : BaseMovement
         {
             _rb.linearDamping = 0;
             _rb.AddForce(_orientation.forward * _moveSpeed * 3.5f, ForceMode.Acceleration);
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 2.5f, ForceMode.Acceleration);
-            //_gravity = 15;
-            
+            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 2.5f, ForceMode.Acceleration);     
         }
         else
         {
@@ -135,12 +137,12 @@ public class PlayerMovement : BaseMovement
         }
     }
 
+    // Dash
     public override void Dash(Vector3 dashDireciton)
     {
         if(_isAbleToDash)
         {
             _rb.linearDamping = 0;
-            //_gravity = 15;
             _isDashing = true;
             base.Dash(dashDireciton);
             _isAbleToDash = false;
@@ -149,6 +151,7 @@ public class PlayerMovement : BaseMovement
         }
     }
 
+    //Make player able to dash again
     public override void ResetDash()
     {
         base.ResetDash();
@@ -157,20 +160,20 @@ public class PlayerMovement : BaseMovement
         SpeedControl();
     }
 
+    // Ground Check
     public override void CheckIfGround()
     {
-        //ground check
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
         _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask); 
-        
-        
     }
 
+    //Control Max velocity
     public override void SpeedControl()
     {
         _rb.maxLinearVelocity = _moveSpeed;
     }
 
+    //Make dash force have a delay force
     private IEnumerator CO_DelayedForce(Vector3 direction)
     {
         yield return new WaitForSeconds(0.025f);
@@ -178,6 +181,7 @@ public class PlayerMovement : BaseMovement
         _rb.AddForce(_dashForce * direction, ForceMode.VelocityChange);
     }
     
+    //Change Drag if needed
     public override void ChangeDrag(float dragValue)
     {
         base.ChangeDrag(dragValue);
@@ -185,18 +189,21 @@ public class PlayerMovement : BaseMovement
         _rb.linearDamping = dragValue;
     }
 
+    //Revert drag to original value
     public override void RevertDragValue()
     {
         base.RevertDragValue();
         _dragValueToUse = _groundDrag;
     }
 
+    //Change Max Speed if needed
     public override void ChangeMaxSpeed(float maxSpeedValue)
     {
         base.ChangeMaxSpeed(maxSpeedValue);
         _rb.maxLinearVelocity = maxSpeedValue;
     }
 
+    //Change Move speed if needed
     public override void ChangeMoveSpeed(float moveSpeedValue)
     {
         base.ChangeMoveSpeed(moveSpeedValue);

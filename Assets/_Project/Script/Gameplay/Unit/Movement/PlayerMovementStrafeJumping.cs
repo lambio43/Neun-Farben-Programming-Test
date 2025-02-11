@@ -1,3 +1,8 @@
+/*
+Tried recreating source movement from a script from a youtube video
+does not work properly
+*/
+
 using NF.Main.Core;
 using UnityEngine;
 

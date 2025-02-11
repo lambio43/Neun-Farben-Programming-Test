@@ -8,14 +8,11 @@ namespace NF.Main.Gameplay
     public class GameManager : SingletonPersistent<GameManager>
     {
         public GameState GameState;
-
-        private StateMachine _stateMachine;
-
         public UnityEvent OnWin;
         public UnityEvent OnDeath;
         public UnityEvent OnReset;
-        
-        
+        private StateMachine _stateMachine;
+
         private void Awake()
         {
             Initialize();

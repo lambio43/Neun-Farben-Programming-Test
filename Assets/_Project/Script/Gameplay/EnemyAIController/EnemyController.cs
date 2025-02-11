@@ -44,13 +44,7 @@ public class EnemyController : MonoExt
 
         public override void OnSubscriptionSet()
         {
-            // base.OnSubscriptionSet();
-            // AddEvent(_playerInput.Attack, _ => OnAttack());
-            // AddEvent(_playerInput.Jump, _ => OnJump());
-            // AddEvent(_playerInput.Dash, _ => OnDash());
-            // //AddEvent(_playerInput.ScrollWheel, _ => OnJump());
-            // AddEvent(_playerInput.Movement, OnPlayerMove);
-            // AddEvent(_playerInput.Look, OnLook);
+
         }
 
         private void SetupStateMachine()
