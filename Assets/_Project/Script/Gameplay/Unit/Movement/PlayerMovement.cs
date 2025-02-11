@@ -40,6 +40,10 @@ public class PlayerMovement : BaseMovement
 
     public void GravityForce()
     {
+        if(_isDashing)
+        {
+            return;
+        }
         _rb.AddForce((Vector3.down * _gravity) * Time.deltaTime, ForceMode.VelocityChange);
     }
 
@@ -70,7 +74,7 @@ public class PlayerMovement : BaseMovement
     {
         //JumpQueue();
 
-        if(_wishJump && _isGrounded)
+        if(_wishJump)// && _isGrounded)
         {
             _wishJump = false;
             _rb.linearDamping = 0;
@@ -105,7 +109,7 @@ public class PlayerMovement : BaseMovement
 
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
 
-        if(_isGrounded == true && _wishJump == false)
+        if(_isGrounded == true && _jumpQueue == false)
         {
             _rb.linearDamping = _dragValueToUse;
             _gravity = 20;
@@ -136,6 +140,7 @@ public class PlayerMovement : BaseMovement
         if(_isAbleToDash)
         {
             _rb.linearDamping = 0;
+            _gravity = 10;
             _isDashing = true;
             base.Dash(dashDireciton);
             _isAbleToDash = false;
