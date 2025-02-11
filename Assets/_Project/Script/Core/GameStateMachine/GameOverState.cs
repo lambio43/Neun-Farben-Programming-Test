@@ -14,6 +14,7 @@ namespace NF.Main.Core.GameStateMachine
         {
             base.OnEnter();
             Debug.Log("Game over state");
+            _gameManager.OnDeath.Invoke();
         }
     }
 }

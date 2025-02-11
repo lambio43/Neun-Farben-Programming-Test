@@ -12,6 +12,8 @@ namespace NF.Main.Gameplay
         private StateMachine _stateMachine;
 
         public UnityEvent OnWin;
+        public UnityEvent OnDeath;
+        public UnityEvent OnReset;
         
         
         private void Awake()

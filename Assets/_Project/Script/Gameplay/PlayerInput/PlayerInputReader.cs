@@ -14,6 +14,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
     public Subject<Unit> Attack;
     public Subject<Unit> Jump;
     public Subject<Unit> Dash;
+    public Subject<Unit> Reset;
     //public Subject<Vector2> ScrollWheel;
     
     
@@ -40,6 +41,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
         Jump = new Subject<Unit>();
         Dash = new Subject<Unit>();
         Look = new Subject<Vector2>();
+        Reset = new Subject<Unit>();
         //ScrollWheel = new Subject<Vector2>();
     }
     
@@ -70,6 +72,11 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnInteract(InputAction.CallbackContext context)
     {
+        if (context.phase == InputActionPhase.Started) 
+        {
+            Reset.OnNext(UniRx.Unit.Default);
+            Debug.Log("working");
+        }
     }
 
     public void OnCrouch(InputAction.CallbackContext context)

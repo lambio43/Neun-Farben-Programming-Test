@@ -1,7 +1,6 @@
 using System.Collections;
 using UniRx.Triggers;
 using Unity.Mathematics;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : BaseMovement
@@ -86,7 +85,7 @@ public class PlayerMovement : BaseMovement
             if(_isStrafing)
             {
                 _isStrafeJumping = true;
-                _rb.maxLinearVelocity = 35f;
+                _rb.maxLinearVelocity = 30f;
             }
             else
             {

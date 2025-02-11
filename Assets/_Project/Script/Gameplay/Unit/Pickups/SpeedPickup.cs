@@ -44,6 +44,6 @@ public class SpeedPickup : BasePickup
     {
         yield return new WaitForSeconds(_buffDuration);
         baseMovement.ChangeMoveSpeed(_playerOriginalMoveSpeed);
-        Destroy(this, 0.1f);
+        Destroy(this.gameObject);
     }
 }

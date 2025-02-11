@@ -33,6 +33,10 @@ namespace NF.Main.Gameplay.PlayerInput
         private Vector2 _moveDirection;
         public PlayerMovement _playerMovement;
         public PlayerMovementStrafeJumping _playerMovementStrafe;
+
+        public delegate void OnResetPlayer();
+
+        public event OnResetPlayer _onResetPlayer;
        
         
         private void Start()
@@ -80,6 +84,7 @@ namespace NF.Main.Gameplay.PlayerInput
             //AddEvent(_playerInput.ScrollWheel, _ => OnJump());
             AddEvent(_playerInput.Movement, OnPlayerMove);
             AddEvent(_playerInput.Look, OnLook);
+            AddEvent(_playerInput.Reset, _ => OnReset());
         }
 
 
@@ -160,6 +165,12 @@ namespace NF.Main.Gameplay.PlayerInput
             {
                 _playerMovement.Dash(new Vector3(_moveDirection.x, 0, _moveDirection.y));
             }
+        }
+
+        private void OnReset()
+        {
+            _playerMovement._rb.linearVelocity = Vector3.zero;
+            _onResetPlayer.Invoke();
         }
 
         // player camera look direction change
