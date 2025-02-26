@@ -15,8 +15,6 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
     public Subject<Unit> Jump;
     public Subject<Unit> Dash;
     public Subject<Unit> Reset;
-    //public Subject<Vector2> ScrollWheel;
-    
     
     private InputSystem_Actions _inputActions;
     
@@ -42,7 +40,6 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
         Dash = new Subject<Unit>();
         Look = new Subject<Vector2>();
         Reset = new Subject<Unit>();
-        //ScrollWheel = new Subject<Vector2>();
     }
     
     public void EnablePlayerActions() 
@@ -137,7 +134,7 @@ public class PlayerInputReader : SerializedScriptableObject, IPlayerActions, IUI
 
     public void OnScrollWheel(InputAction.CallbackContext context)
     {
-        //ScrollWheel.OnNext(context.ReadValue<Vector2>());
+        
     }
 
     public void OnTrackedDevicePosition(InputAction.CallbackContext context)

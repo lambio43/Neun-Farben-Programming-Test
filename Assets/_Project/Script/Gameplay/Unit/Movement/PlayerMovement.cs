@@ -1,6 +1,7 @@
 using System.Collections;
 using UniRx.Triggers;
 using Unity.Mathematics;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerMovement : BaseMovement
@@ -23,6 +24,11 @@ public class PlayerMovement : BaseMovement
     public bool _isStrafeJumping;
     public bool _jumpQueue = false;
     public bool _wishJump = false;
+
+    //player and camera rotation variables
+    [SerializeField] private CinemachineCamera _playerCamera;
+    private float _xRotation;
+    private float _yRotation;
     
     private void Start()
     {
@@ -40,73 +46,22 @@ public class PlayerMovement : BaseMovement
     //Gravity force
     public void GravityForce()
     {
-        if(_isDashing)
-        {
-            return;
-        }
         _rb.AddForce((Vector3.down * _gravity) * Time.deltaTime, ForceMode.VelocityChange);
-    }
-
-    //Determine if player is trying to jump again
-    public void JumpQueue()
-    {
-        if (_isGrounded)
-		{
-			_wishJump = true;
-		}
-
-		if (!_isGrounded)
-		{
-			_jumpQueue = true;
-		}
-		if (_isGrounded && _jumpQueue)
-		{
-			_wishJump = true;
-			_jumpQueue = false;
-		}
-
-        if(_wishJump)
-        {
-            Jump();
-        }
     }
 
     //Jump
     public override void Jump()
     {
-        if(_wishJump)
-        {
-            _wishJump = false;
+        if (_isGrounded)
+	 	{
             _rb.linearDamping = 0;
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.VelocityChange);
-            _isAbleToJump = false;
-
-            if(_isStrafing)
-            {
-                _isStrafeJumping = true;
-                _rb.maxLinearVelocity = 30f;
-            }
-            else
-            {
-                _isStrafeJumping = false;
-            }
         }   
     }
 
 
     public override void Move(Vector2 movementDireciton)
     {
-        //Determine whether player is strafing
-        if(movementDireciton.x != 0)
-        {
-            _isStrafing = true;
-        }
-        else
-        {
-            _isStrafing = false;
-            _isStrafeJumping = false;
-        }
-
         //Move direction
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
         
@@ -121,19 +76,11 @@ public class PlayerMovement : BaseMovement
         if(_isGrounded == true)
         {
             _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
-            
-        }
-        else if (_isGrounded == false && _isStrafing == true)
-        {
-            _rb.linearDamping = 0;
-            _rb.AddForce(_orientation.forward * _moveSpeed * 3.5f, ForceMode.Acceleration);
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier * 2.5f, ForceMode.Acceleration);     
         }
         else
         {
             _rb.linearDamping = 0;
-            _rb.AddForce(_moveDirection.normalized * _moveSpeed  * 10f, ForceMode.Force);
-            SpeedControl();
+            _rb.AddForce(_moveDirection.normalized * _moveSpeed * _airMultiplier  * 10f, ForceMode.Force);
         }
     }
 
@@ -164,7 +111,7 @@ public class PlayerMovement : BaseMovement
     public override void CheckIfGround()
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
-        _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask); 
+        _isAbleToJump = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundLayerMask);
     }
 
     //Control Max velocity
@@ -177,7 +124,7 @@ public class PlayerMovement : BaseMovement
     private IEnumerator CO_DelayedForce(Vector3 direction)
     {
         yield return new WaitForSeconds(0.025f);
-        _rb.maxLinearVelocity = _dashForce;
+        _rb.maxLinearVelocity = _dashForce * 0.45f;
         _rb.AddForce(_dashForce * direction, ForceMode.VelocityChange);
     }
     
@@ -209,5 +156,18 @@ public class PlayerMovement : BaseMovement
         base.ChangeMoveSpeed(moveSpeedValue);
         _moveSpeed = moveSpeedValue;
         SpeedControl();
+    }
+
+    //player turn camera and plaeyr
+    public void Turn(Vector2 LookDirection)
+    {
+        _yRotation += LookDirection.x;
+
+        _xRotation -= LookDirection.y;
+        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+            
+        _playerCamera.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
+
+        _orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
     }
 }

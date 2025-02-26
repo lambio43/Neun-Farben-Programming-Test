@@ -23,11 +23,8 @@ namespace NF.Main.Gameplay.PlayerInput
         //player and camera rotation variables
         [SerializeField] private CinemachineCamera _playerCamera;
         private Vector2 _lookDirection;
-        private float _xRotation;
-        private float _yRotation;
         public float _cameraXSensitivity;
         public float _cameraYSensitivity;
-        public Transform _orientation;
 
         //player movement variables
         private Vector2 _moveDirection;
@@ -38,7 +35,6 @@ namespace NF.Main.Gameplay.PlayerInput
         public delegate void OnResetPlayer();
         public event OnResetPlayer _onResetPlayer;
        
-        
         private void Start()
         {
             Initialize();
@@ -62,11 +58,6 @@ namespace NF.Main.Gameplay.PlayerInput
             _stateMachine.FixedUpdate();
         }
 
-        private void LateUpdate()
-        {
-            Turn();
-        }
-
         //Initialize needed data
         public override void Initialize(object data = null)
         {
@@ -81,10 +72,9 @@ namespace NF.Main.Gameplay.PlayerInput
             AddEvent(_playerInput.Attack, _ => OnAttack());
             AddEvent(_playerInput.Jump, _ => OnJump());
             AddEvent(_playerInput.Dash, _ => OnDash());
-            //AddEvent(_playerInput.ScrollWheel, _ => OnJump());
+            AddEvent(_playerInput.Reset, _ => OnReset());
             AddEvent(_playerInput.Movement, OnPlayerMove);
             AddEvent(_playerInput.Look, OnLook);
-            AddEvent(_playerInput.Reset, _ => OnReset());
         }
 
 
@@ -145,9 +135,7 @@ namespace NF.Main.Gameplay.PlayerInput
         private void OnJump()
         {
             PlayerState = PlayerState.Moving;
-            _playerMovement.JumpQueue();
-            //_playerMovementStrafe.QueueJump();
-            //PlayerState = PlayerState.Idle;
+            _playerMovement.Jump();
         }
 
         // player dash logic
@@ -179,19 +167,7 @@ namespace NF.Main.Gameplay.PlayerInput
             //Debug.Log($"Player Movement: {LookDirection.normalized}");
             _lookDirection.x = LookDirection.normalized.x * Time.deltaTime * _cameraXSensitivity;
             _lookDirection.y = LookDirection.normalized.y * Time.deltaTime * _cameraYSensitivity;
-        }
-
-        //player turn camera and plaeyr
-        private void Turn()
-        {
-            _yRotation += _lookDirection.x;
-
-            _xRotation -= _lookDirection.y;
-            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-            
-            _playerCamera.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);
-
-            _orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
+            _playerMovement.Turn(_lookDirection);
         }
 
         //get movement for moving
