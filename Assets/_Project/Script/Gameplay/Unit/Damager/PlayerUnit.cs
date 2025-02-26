@@ -8,16 +8,11 @@ public class PlayerUnit : BaseUnit
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private Vector3 _startPosition;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         _startPosition = transform.position;
         _playerController._onResetPlayer += ResetPlayer;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public override void OnDeath()
