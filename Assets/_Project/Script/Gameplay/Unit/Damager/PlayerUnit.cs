@@ -33,4 +33,22 @@ public class PlayerUnit : BaseUnit
         _playerController.PlayerState = PlayerState.Idle;
         GameManager.Instance.GameState = GameState.Playing;
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.collider.tag == "Enemy")
+        {
+            OnCollideEnemy(other.collider);
+        }
+    }
+
+    private void OnCollideEnemy(Collider other)
+    {
+        bool isDashing = _playerController._playerMovement._isDashing;
+
+        if(isDashing)
+        {
+            DamageUnit(other.GetComponent<EnemyBaseUnit>());
+        }
+    } 
 }
