@@ -1,18 +1,28 @@
 using NF.Main.Core;
+using Unity.Mathematics;
 using UnityEngine;
+using UniRx;
 
 public class EnemyMovement : BaseMovement
 {
     public Transform[] _enemyAIPath;
     private int _maxAIPathCount;
-    private int _currentAIPathIndex = 0;
+    [SerializeField]private int _currentAIPathIndex = 0;
+    //use unirx for changes to AIPathIndex so as to change to idle state when it change
 
+    public Subject<int> AIPathIndex;
+
+    private void OnEnable()
+    {
+        AIPathIndex = new Subject<int>();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _maxAIPathCount = _enemyAIPath.Length;
         Debug.Log(_maxAIPathCount);
+        
     }
 
     // Update is called once per frame
@@ -29,6 +39,27 @@ public class EnemyMovement : BaseMovement
         CheckIfEnemyOnLocation();
     }
 
+    public void Turn()
+    {
+        Vector3 direction = _enemyAIPath[_currentAIPathIndex].position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 5f * Time.deltaTime);
+    }
+
+    public bool IsFacingTarget()
+    {
+        Vector3 direction = _enemyAIPath[_currentAIPathIndex].position - transform.position;
+        float dotprod = Vector3.Dot(direction.normalized, transform.forward);
+        if(dotprod == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void ChangePathIndex()
     {
         _currentAIPathIndex++;
@@ -37,6 +68,7 @@ public class EnemyMovement : BaseMovement
         {
             _currentAIPathIndex = 0;
         }
+        AIPathIndex.OnNext(_currentAIPathIndex);
     }
 
     private void CheckIfEnemyOnLocation()

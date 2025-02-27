@@ -8,7 +8,8 @@ namespace NF.Main.Core.EnemyStateMachine
             protected readonly EnemyController _enemyController;
             protected readonly Animator _animator;
 
-            protected static readonly int IdleHash = Animator.StringToHash("Patrol");
+            protected static readonly int IdleHash = Animator.StringToHash("Idle");
+            protected static readonly int RunningHash = Animator.StringToHash("Running");
     
             protected EnemyBaseState(EnemyController enemyController, Animator animator)
             {
@@ -19,6 +20,7 @@ namespace NF.Main.Core.EnemyStateMachine
 
     public enum EnemyState
     {
+        Idle,
         Patrol
     }
 }

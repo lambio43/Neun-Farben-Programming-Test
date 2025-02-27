@@ -15,59 +15,70 @@ public class EnemyController : MonoExt
     public EnemyMovement _enemyMovement;
 
     private void Start()
-        {
-            Initialize();
-            OnSubscriptionSet();
-        }
+    {
+        Initialize();
+        OnSubscriptionSet();
+    }
 
-        private void Awake()
-        {
-            SetupStateMachine();
-        }
+    private void Awake()
+    {
+        SetupStateMachine();
+    }
 
-        //Call the current states update method
-        private void Update()
-        {
-            _stateMachine.Update();
-        }
+    //Call the current states update method
+    private void Update()
+    {
+        _stateMachine.Update();
+    }
 
-        //Call the current states fixed update method
-        private void FixedUpdate()
-        {
-            _stateMachine.FixedUpdate();
-        }
+    //Call the current states fixed update method
+    private void FixedUpdate()
+    {
+        _stateMachine.FixedUpdate();
+    }
 
-        public override void Initialize(object data = null)
-        {
-            base.Initialize(data);
-        }
+    public override void Initialize(object data = null)
+    {
+        base.Initialize(data);
+    }
 
-        public override void OnSubscriptionSet()
-        {
+    public override void OnSubscriptionSet()
+    {
+        //add event when movement index change to make state to idle
+        AddEvent(_enemyMovement.AIPathIndex, ChangeStateIdle);
+    }
 
-        }
-
-        private void SetupStateMachine()
-        {
-            // State Machine
-            _stateMachine = new StateMachine();
-            
-            // Declare Player States
-            var patrolState = new EnemyPatrolState(this, _animator);
-            
-            // Define Player State Transitions
-            Any(patrolState, new FuncPredicate(ReturnToPatrolState));
-            
-            // Set Initial State
-            _stateMachine.SetState(patrolState);
-        }
+    private void SetupStateMachine()
+    {
+        // State Machine
+        _stateMachine = new StateMachine();
+        
+        // Declare Player States
+        var idleState = new EnemyIdleState(this,_animator);
+        var patrolState = new EnemyPatrolState(this, _animator);
+        
+        // Define Player State Transitions
+        At(idleState, patrolState, new FuncPredicate(() => EnemyState == EnemyState.Patrol));
+        Any(idleState, new FuncPredicate(ReturnToIdleState));
+        
+        // Set Initial State
+        _stateMachine.SetState(idleState);
+    }
 
         private void At(IState from, IState to, IPredicate condition) => _stateMachine.AddTransition(from, to, condition);
         private void Any(IState to, IPredicate condition) => _stateMachine.AddAnyTransition(to, condition);
         
         //Method that handles the condition if the player should return to idle state
-        private bool ReturnToPatrolState()
+        private bool ReturnToIdleState()
         {
-            return EnemyState == EnemyState.Patrol;
+            return EnemyState == EnemyState.Idle;
         }
+
+        private void ChangeStateIdle(int test)
+        {
+            Debug.Log("event fired");
+            EnemyState = EnemyState.Idle;
+        }
+
+        
 }

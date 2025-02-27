@@ -11,12 +11,13 @@ public class EnemyPatrolState : EnemyBaseState
 
     public override void OnEnter()
     {
-        base.OnEnter(); 
+        base.OnEnter();
+        _animator.CrossFade(RunningHash, 0.25f); 
     }
 
     public override void Update()
     {
-
+        
     }
 
     public override void FixedUpdate()
