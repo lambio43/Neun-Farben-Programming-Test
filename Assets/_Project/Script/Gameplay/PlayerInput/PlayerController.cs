@@ -134,6 +134,11 @@ namespace NF.Main.Gameplay.PlayerInput
         //player jump logic
         private void OnJump()
         {
+            if(PlayerState == PlayerState.Death)
+            {
+                return;
+            }
+
             PlayerState = PlayerState.Moving;
             _playerMovement.Jump();
         }
@@ -141,6 +146,11 @@ namespace NF.Main.Gameplay.PlayerInput
         // player dash logic
         private void OnDash()
         {
+            if(PlayerState == PlayerState.Death)
+            {
+                return;
+            }
+
             if(_moveDirection == Vector2.up)
             {
                 _playerMovement.Dash(_playerCamera.transform.forward);

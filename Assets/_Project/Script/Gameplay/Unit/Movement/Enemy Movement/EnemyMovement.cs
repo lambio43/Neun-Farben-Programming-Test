@@ -39,7 +39,7 @@ public class EnemyMovement : BaseMovement
         CheckIfEnemyOnLocation();
     }
 
-    public void Turn()
+    public override void Turn(Vector2 LookDirection)
     {
         Vector3 direction = _enemyAIPath[_currentAIPathIndex].position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);

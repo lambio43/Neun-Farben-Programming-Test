@@ -23,7 +23,7 @@ public class EnemyIdleState : EnemyBaseState
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        _enemyController._enemyMovement.Turn();
+        _enemyController._enemyMovement.Turn(Vector2.zero);
         
         if(_enemyController._enemyMovement.IsFacingTarget())
         {

@@ -43,6 +43,7 @@ public class PlayerMovement : BaseMovement
         _rb.freezeRotation = true;
         SpeedControl();
         _dragValueToUse = _groundDrag;
+        OnSubscriptionSet();
     }
 
     private void FixedUpdate()
@@ -67,6 +68,11 @@ public class PlayerMovement : BaseMovement
         }   
     }
 
+    public override void OnSubscriptionSet()
+    {
+        base.OnSubscriptionSet();
+        AddEvent(CooldownReduced, UIManager.Instance.UpdateDashCoolDownText);
+    }
 
     public override void Move(Vector2 movementDireciton)
     {
@@ -190,7 +196,7 @@ public class PlayerMovement : BaseMovement
     }
 
     //player turn camera and plaeyr
-    public void Turn(Vector2 LookDirection)
+    public override void Turn(Vector2 LookDirection)
     {
         _yRotation += LookDirection.x;
 
