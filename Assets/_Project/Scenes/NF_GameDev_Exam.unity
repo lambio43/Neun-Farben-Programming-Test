@@ -8114,18 +8114,22 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: CooldownReduced
+      Entry: 6
+      Data: 
   _moveSpeed: 20
   _jumpForce: 20
   _dashForce: 100
-  _dashDuration: 0.5
+  _dashCooldown: 5
+  _currentDashCooldown: 0
   _jumpCooldown: 0.25
   _airMultiplier: 0.4
   _isAbleToJump: 1
   _isAbleToDash: 1
   _isGrounded: 1
-  _rb: {fileID: 1678409465}
   _isDashing: 0
+  _rb: {fileID: 1678409465}
   _orientation: {fileID: 1729534377}
   _groundDrag: 5
   _playerHeight: 2

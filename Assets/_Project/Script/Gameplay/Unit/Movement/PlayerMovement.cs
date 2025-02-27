@@ -3,10 +3,12 @@ using UniRx.Triggers;
 using Unity.Mathematics;
 using Unity.Cinemachine;
 using UnityEngine;
+using UniRx;
 
 public class PlayerMovement : BaseMovement
 {
-    public bool _isDashing = false;
+    // To be used for updating cooldown in UI
+    public Subject<float> CooldownReduced;
 
     //Directions
     public Transform _orientation;
@@ -29,7 +31,12 @@ public class PlayerMovement : BaseMovement
     [SerializeField] private CinemachineCamera _playerCamera;
     private float _xRotation;
     private float _yRotation;
-    
+
+    private void Awake()
+    {
+        CooldownReduced = new Subject<float>();
+    }
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -41,6 +48,7 @@ public class PlayerMovement : BaseMovement
     private void FixedUpdate()
     {
         GravityForce();
+        DashCooldown();
     }
 
     //Gravity force
@@ -93,8 +101,9 @@ public class PlayerMovement : BaseMovement
             _isDashing = true;
             base.Dash(dashDireciton);
             _isAbleToDash = false;
+            _currentDashCooldown = _dashCooldown;
             StartCoroutine(CO_DelayedForce(dashDireciton));
-            Invoke(nameof(ResetDash), _dashDuration);
+            Debug.Log("Dash disable");
         }
     }
 
@@ -103,8 +112,27 @@ public class PlayerMovement : BaseMovement
     {
         base.ResetDash();
         _isAbleToDash = true;
-        _isDashing = false;
-        SpeedControl();
+        _currentDashCooldown = 0;
+        CooldownReduced.OnNext(_currentDashCooldown);
+        Debug.Log("Dash Enable");
+    }
+
+    public override void DashCooldown()
+    {
+        base.DashCooldown();
+        if (_isAbleToDash)
+        {
+            return;
+        }
+
+        _currentDashCooldown -= Time.deltaTime;
+        Debug.Log(_currentDashCooldown);
+        CooldownReduced.OnNext(_currentDashCooldown);
+
+        if(_currentDashCooldown <= 0)
+        {
+            ResetDash();
+        }
     }
 
     // Ground Check
@@ -126,6 +154,9 @@ public class PlayerMovement : BaseMovement
         yield return new WaitForSeconds(0.025f);
         _rb.maxLinearVelocity = _dashForce * 0.45f;
         _rb.AddForce(_dashForce * direction, ForceMode.VelocityChange);
+        yield return new WaitForSeconds(0.5f);
+        _isDashing = false;
+        SpeedControl();
     }
     
     //Change Drag if needed

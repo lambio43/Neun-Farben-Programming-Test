@@ -45,7 +45,7 @@ public class EnemyController : MonoExt
     public override void OnSubscriptionSet()
     {
         //add event when movement index change to make state to idle
-        AddEvent(_enemyMovement.AIPathIndex, ChangeStateIdle);
+        AddEvent(_enemyMovement.AIPathIndex, _ => ChangeStateIdle());
     }
 
     private void SetupStateMachine()
@@ -74,7 +74,7 @@ public class EnemyController : MonoExt
             return EnemyState == EnemyState.Idle;
         }
 
-        private void ChangeStateIdle(int test)
+        private void ChangeStateIdle()
         {
             Debug.Log("event fired");
             EnemyState = EnemyState.Idle;

@@ -44,6 +44,7 @@ public class PlayerUnit : BaseUnit
         if(isDashing)
         {
             DamageUnit(other.GetComponent<EnemyBaseUnit>());
+            _playerController._playerMovement.ResetDash();
         }
     } 
 }

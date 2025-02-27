@@ -6,12 +6,14 @@ public class BaseMovement : MonoExt, IJump, IMove
     public float _moveSpeed;
     public float _jumpForce;
     public float _dashForce;
-    public float _dashDuration = 0.25f;
+    public float _dashCooldown = 5f;
+    public float _currentDashCooldown;
     public float _jumpCooldown;
     public float _airMultiplier;
     public bool _isAbleToJump = true;
     public bool _isAbleToDash = true;
     public bool _isGrounded = true;
+    public bool _isDashing = false;
     public Rigidbody _rb;
 
     void Start()
@@ -45,6 +47,11 @@ public class BaseMovement : MonoExt, IJump, IMove
     public virtual void ResetDash()
     {
 
+    }
+
+    public virtual void DashCooldown()
+    {
+        
     }
 
     public virtual void ChangeMaxSpeed(float maxSpeedValue)
