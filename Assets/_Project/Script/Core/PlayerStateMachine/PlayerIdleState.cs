@@ -13,8 +13,6 @@ namespace NF.Main.Core.PlayerStateMachine
         public override void OnEnter()
         {
             base.OnEnter();
-           _playerController._playerMovement._isStrafing = false;
-           _playerController._playerMovement._isStrafeJumping = false;
         }
 
         public override void Update()

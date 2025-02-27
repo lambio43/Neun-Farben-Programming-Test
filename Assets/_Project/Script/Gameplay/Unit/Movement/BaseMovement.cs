@@ -49,7 +49,7 @@ public class BaseMovement : MonoExt, IJump, IMove
 
     }
 
-    public virtual void Turn(Vector2 LookDirection)
+    public virtual void Turn(Vector2 lookDirection)
     {
 
     }

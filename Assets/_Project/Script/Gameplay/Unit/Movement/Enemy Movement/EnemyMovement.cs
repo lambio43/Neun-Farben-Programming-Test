@@ -8,8 +8,8 @@ public class EnemyMovement : BaseMovement
     public Transform[] _enemyAIPath;
     private int _maxAIPathCount;
     [SerializeField]private int _currentAIPathIndex = 0;
-    //use unirx for changes to AIPathIndex so as to change to idle state when it change
 
+    //use unirx for changes to AIPathIndex so as to change to idle state when it change
     public Subject<int> AIPathIndex;
 
     private void OnEnable()
@@ -17,18 +17,10 @@ public class EnemyMovement : BaseMovement
         AIPathIndex = new Subject<int>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _maxAIPathCount = _enemyAIPath.Length;
         Debug.Log(_maxAIPathCount);
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public override void Move(Vector2 movementDireciton)
@@ -39,7 +31,7 @@ public class EnemyMovement : BaseMovement
         CheckIfEnemyOnLocation();
     }
 
-    public override void Turn(Vector2 LookDirection)
+    public override void Turn(Vector2 lookDirection)
     {
         Vector3 direction = _enemyAIPath[_currentAIPathIndex].position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);

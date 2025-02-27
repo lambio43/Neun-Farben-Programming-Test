@@ -4,7 +4,6 @@ public class SlowTrap : BaseTrap
 {
     public float _dragValue;
     public float _maxSpeedOnTrap;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void OnCollisionEnter(Collision collision)
     {

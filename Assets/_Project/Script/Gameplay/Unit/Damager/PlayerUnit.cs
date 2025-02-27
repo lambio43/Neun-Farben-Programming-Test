@@ -7,7 +7,6 @@ public class PlayerUnit : BaseUnit
 {
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private Vector3 _startPosition;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Start()
     {
@@ -26,7 +25,7 @@ public class PlayerUnit : BaseUnit
         transform.SetPositionAndRotation(_startPosition, Quaternion.identity);
         _currentHp = _maxHp;
         _playerController.PlayerState = PlayerState.Idle;
-        GameManager.Instance.GameState = GameState.Playing;
+        GameManager.Instance._gameState = GameState.Playing;
     }
 
     private void OnCollisionEnter(Collision other)

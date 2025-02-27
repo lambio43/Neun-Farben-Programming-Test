@@ -21,11 +21,11 @@ public class PlayerMovement : BaseMovement
     public float _gravity;
     private float _dragValueToUse;
 
-    //Strafe jumping or bhop variables
-    public bool _isStrafing;
-    public bool _isStrafeJumping;
-    public bool _jumpQueue = false;
-    public bool _wishJump = false;
+    // //Strafe jumping or bhop variables
+    // public bool _isStrafing;
+    // public bool _isStrafeJumping;
+    // public bool _jumpQueue = false;
+    // public bool _wishJump = false;
 
     //player and camera rotation variables
     [SerializeField] private CinemachineCamera _playerCamera;
@@ -79,16 +79,10 @@ public class PlayerMovement : BaseMovement
         //Move direction
         _moveDirection = _orientation.forward * movementDireciton.y + _orientation.right * movementDireciton.x;
         
-
-        //Check if player is strafe jumping and decide if velocity is limited
-        if(_isGrounded == true && _jumpQueue == false)
+        if(_isGrounded == true)
         {
             _rb.linearDamping = _dragValueToUse;
             _gravity = 20;
-        }
-        
-        if(_isGrounded == true)
-        {
             _rb.AddForce( _moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
         }
         else
@@ -123,6 +117,7 @@ public class PlayerMovement : BaseMovement
         Debug.Log("Dash Enable");
     }
 
+    //reduce current cooldown to know if player can dash again
     public override void DashCooldown()
     {
         base.DashCooldown();
@@ -196,11 +191,11 @@ public class PlayerMovement : BaseMovement
     }
 
     //player turn camera and plaeyr
-    public override void Turn(Vector2 LookDirection)
+    public override void Turn(Vector2 lookDirection)
     {
-        _yRotation += LookDirection.x;
+        _yRotation += lookDirection.x;
 
-        _xRotation -= LookDirection.y;
+        _xRotation -= lookDirection.y;
         _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
             
         _playerCamera.transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0);

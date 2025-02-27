@@ -16,7 +16,7 @@ namespace NF.Main.Core.PlayerStateMachine
             base.OnEnter();
             
             Debug.Log("Entering Player Death State");
-            GameManager.Instance.GameState = GameState.GameOver;
+            GameManager.Instance._gameState = GameState.GameOver;
         }
 
         public override void Update()

@@ -7,10 +7,10 @@ namespace NF.Main.Gameplay
 {
     public class GameManager : SingletonPersistent<GameManager>
     {
-        public GameState GameState;
-        public UnityEvent OnWin;
-        public UnityEvent OnDeath;
-        public UnityEvent OnReset;
+        public GameState _gameState;
+        public UnityEvent _onWin;
+        public UnityEvent _onDeath;
+        public UnityEvent _onReset;
         private StateMachine _stateMachine;
 
         private void Awake()
@@ -26,7 +26,7 @@ namespace NF.Main.Gameplay
         public override void Initialize(object data = null)
         {
             base.Initialize(data);
-            GameState = GameState.Playing;
+            _gameState = GameState.Playing;
             SetupStateMachine();
         }
 
@@ -43,11 +43,11 @@ namespace NF.Main.Gameplay
 
 
             // Define transitions
-            At(playingState, pausedState, new FuncPredicate(() => GameState == GameState.Paused));
-            At(playingState, gameOverState, new FuncPredicate(() => GameState == GameState.GameOver));
-            At(playingState, gameWinState, new FuncPredicate(() => GameState == GameState.GameWin));
+            At(playingState, pausedState, new FuncPredicate(() => _gameState == GameState.Paused));
+            At(playingState, gameOverState, new FuncPredicate(() => _gameState == GameState.GameOver));
+            At(playingState, gameWinState, new FuncPredicate(() => _gameState == GameState.GameWin));
             
-            Any(playingState, new FuncPredicate(() => GameState == GameState.Playing));
+            Any(playingState, new FuncPredicate(() => _gameState == GameState.Playing));
 
             // Set initial state
             _stateMachine.SetState(playingState);

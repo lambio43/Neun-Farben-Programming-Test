@@ -12,7 +12,7 @@ public class FinishLine : MonoExt
         if(other.CompareTag("Player") && isCrossFinishLine == false)
         {
             //other.GetComponentInParent<BaseUnit>()
-           GameManager.Instance.GameState = GameState.GameWin;
+           GameManager.Instance._gameState = GameState.GameWin;
         }
     }
 }

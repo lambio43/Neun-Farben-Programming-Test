@@ -16,7 +16,7 @@ namespace NF.Main.Core.GameStateMachine
         {
             base.OnEnter();
             Debug.Log("Game Win state");
-            _gameManager.OnWin.Invoke();
+            _gameManager._onWin.Invoke();
         }
     }
 }
