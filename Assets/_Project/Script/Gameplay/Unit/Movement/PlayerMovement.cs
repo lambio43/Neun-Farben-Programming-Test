@@ -20,13 +20,7 @@ public class PlayerMovement : BaseMovement
     public LayerMask _groundLayerMask;
     public float _gravity;
     private float _dragValueToUse;
-
-    // //Strafe jumping or bhop variables
-    // public bool _isStrafing;
-    // public bool _isStrafeJumping;
-    // public bool _jumpQueue = false;
-    // public bool _wishJump = false;
-
+    
     //player and camera rotation variables
     [SerializeField] private CinemachineCamera _playerCamera;
     private float _xRotation;
